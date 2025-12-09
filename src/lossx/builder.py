@@ -47,7 +47,7 @@ def build_loss(  # noqa: C901
         loss_fn = LOSS_REGISTRY[cfg["target"]]
         weight = cfg.get("weight", 1.0)
         # Filter out 'target' and 'weight' from config before passing to loss
-        loss_kwargs = {k: v for k, v in cfg.items() if k not in LossArgsCfg.keys()}
+        loss_kwargs = {k: v for k, v in cfg.items() if k not in {"target", "weight"}}
 
         if loss_kwargs:
             # Partially apply the loss-specific kwargs
