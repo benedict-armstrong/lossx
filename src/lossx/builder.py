@@ -2,7 +2,6 @@
 
 from collections.abc import Callable
 from functools import partial
-from typing import NotRequired, TypedDict
 
 import jax.numpy as jnp
 from jax import Array
@@ -18,7 +17,7 @@ from .loss import (
     q_loss,
     quantile_loss,
 )
-from .types import LossFn, Reduction
+from .types import LossArgsCfg, LossCfg, LossFn, Reduction
 
 # Registry of available loss functions
 LOSS_REGISTRY: dict[str, Callable] = {
@@ -32,16 +31,8 @@ LOSS_REGISTRY: dict[str, Callable] = {
 }
 
 
-class LossArgsCfg(TypedDict):
-    """Configuration for a single loss function."""
-
-    target: str  # loss function name
-    weight: NotRequired[float]
-    # ... any loss-specific kwargs
-
-
 def build_loss(  # noqa: C901
-    config: PyTree[LossArgsCfg],
+    config: LossCfg,
     reduction: Reduction[Scalar] = jnp.sum,
 ) -> LossFn[PyTree[Array]]:
     """Build loss from PyTree of configs. Handles all cases uniformly.
@@ -56,7 +47,7 @@ def build_loss(  # noqa: C901
         loss_fn = LOSS_REGISTRY[cfg["target"]]
         weight = cfg.get("weight", 1.0)
         # Filter out 'target' and 'weight' from config before passing to loss
-        loss_kwargs = {k: v for k, v in cfg.items() if k not in ["target", "weight"]}
+        loss_kwargs = {k: v for k, v in cfg.items() if k not in LossArgsCfg.keys()}
 
         if loss_kwargs:
             # Partially apply the loss-specific kwargs

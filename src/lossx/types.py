@@ -1,6 +1,6 @@
 """Type definitions for loss functions and reductions."""
 
-from typing import Protocol, TypeVar
+from typing import NotRequired, Protocol, TypedDict, TypeVar
 
 from jaxtyping import Array, PyTree, Scalar
 
@@ -39,3 +39,14 @@ class Reduction(Protocol[R]):
     def __call__(self, losses: PyTree[R]) -> R:
         """Reduce a PyTree of scalars to a single scalar."""
         ...
+
+
+class LossArgsCfg(TypedDict):
+    """Configuration for a single loss function."""
+
+    target: str  # loss function name
+    weight: NotRequired[float]
+    # ... any loss-specific kwargs
+
+
+LossCfg = PyTree[LossArgsCfg]
