@@ -44,7 +44,7 @@ jobs:
 
       # Sync environment
       - name: Sync environment
-        run: uv sync --extra dev
+        run: uv sync --group dev
 
       - name: Get changed files
         id: changed-files
