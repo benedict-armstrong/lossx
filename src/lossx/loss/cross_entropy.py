@@ -1,4 +1,4 @@
-"""Cross-entropy loss function."""
+"""Cross-entropy loss functions for classification tasks."""
 
 import jax.numpy as jnp
 from jax import Array

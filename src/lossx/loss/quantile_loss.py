@@ -1,4 +1,4 @@
-"""Quantile loss function."""
+"""Quantile loss for uncertainty estimation."""
 
 import jax.numpy as jnp
 from jax import Array

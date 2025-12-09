@@ -1,4 +1,4 @@
-"""Gaussian negative log-likelihood loss function."""
+"""Gaussian negative log-likelihood loss for uncertainty estimation."""
 
 import jax.numpy as jnp
 from jax import Array

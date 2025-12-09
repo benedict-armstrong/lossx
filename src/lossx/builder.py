@@ -44,9 +44,8 @@ def build_loss(  # noqa: C901
     config: PyTree[LossArgsCfg],
     reduction: Reduction[Scalar] = jnp.sum,
 ) -> LossFn[PyTree[Array]]:
-    """Build loss from PyTree of configs.
+    """Build loss from PyTree of configs. Handles all cases uniformly.
 
-    Handles all cases uniformly:
     - Single dict → single loss
     - List of dicts → composite loss
     - Dict of dicts → multi-task loss
@@ -75,7 +74,7 @@ def build_loss(  # noqa: C901
         """Check if a config dict represents a single loss (has 'target' key)."""
         return isinstance(cfg, dict) and "target" in cfg
 
-    def _build_tree(cfg):  # noqa: C901
+    def _build_tree(cfg):
         """Recursively build a tree of loss functions from config tree."""
         if _is_loss_config(cfg):
             # This is a loss config - build the loss function

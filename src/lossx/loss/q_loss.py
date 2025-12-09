@@ -1,4 +1,4 @@
-"""Q-loss function."""
+"""Q-loss for classification with masking support."""
 
 import jax.numpy as jnp
 from jax import Array

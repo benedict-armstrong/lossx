@@ -1,4 +1,4 @@
-"""Contrastive loss functions."""
+"""Contrastive loss functions for self-supervised learning."""
 
 import jax
 import jax.numpy as jnp
