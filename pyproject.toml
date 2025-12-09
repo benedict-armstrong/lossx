@@ -1,0 +1,48 @@
+[project]
+name = "lossx"
+dynamic = ["version"]
+description = "LossX: A JAX loss function library with config-based construction."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    { name = "Benedict Armstrong", email = "benedict.armstrong@inf.ethz.ch" },
+]
+license = "MIT"
+license-files = ["LICEN[CS]E.*"]
+dependencies = ["jax>=0.8.1", "jaxtyping>=0.3.3", "ruff>=0.14.8"]
+
+
+[dependency-groups]
+dev = ["pre-commit>=4.3.0", "ruff>=0.12.11", "pytest>=8.3.3"]
+
+[build-system]
+requires = ["hatchling>=1.27.0", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+raw-options = { local_scheme = "no-local-version", version_scheme = "only-version" }
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lossx"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 99
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["C", "E", "F", "I", "W", "D", "N"]
+ignore = ["E741", "W605", "C408", "E402", "F722", "N806", "N803", "D107"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+docstring-code-format = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

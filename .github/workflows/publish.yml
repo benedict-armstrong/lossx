@@ -1,0 +1,41 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch full history so hatch-vcs can find tags
+
+      - name: Verify tag is on main branch
+        run: |
+          git fetch origin main
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+              echo "Error: Tag must be on main branch"
+              exit 1
+          fi
+
+      - name: Install uv and setup the python version
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install the project
+        run: uv sync --all-groups
+
+      - name: Build wheel
+        run: uv build
+
+      - name: Publish package
+        run: uv publish
