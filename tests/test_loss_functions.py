@@ -7,6 +7,7 @@ from jax import random
 from lossx.loss import (
     contrastive,
     cross_entropy,
+    focal,
     gaussian_nll,
     mse,
     penex,
@@ -75,6 +76,51 @@ class TestCrossEntropy:
         loss_unweighted = cross_entropy(true_y, pred_y)
         # Weighted loss should be different
         assert not jnp.allclose(loss_weighted, loss_unweighted)
+
+
+class TestFocal:
+    """Tests for focal loss function."""
+
+    def test_focal_basic(self):
+        """Test basic focal loss computation."""
+        true_y = jnp.array([1.0, 0.0, 1.0, 0.0])
+        pred_y = jnp.array([2.0, -1.0, 1.5, -2.0])
+        loss = focal(true_y, pred_y)
+        assert loss.shape == ()
+        assert jnp.isfinite(loss)
+
+    def test_focal_with_gamma(self):
+        """Test focal loss with different gamma values."""
+        true_y = jnp.array([1.0, 0.0, 1.0])
+        pred_y = jnp.array([1.0, -1.0, 2.0])
+
+        loss_gamma2 = focal(true_y, pred_y, gamma=2.0)
+        loss_gamma3 = focal(true_y, pred_y, gamma=3.0)
+
+        # Different gamma values should give different losses
+        assert not jnp.allclose(loss_gamma2, loss_gamma3)
+
+    def test_focal_with_epsilon(self):
+        """Test focal loss with epsilon parameter."""
+        true_y = jnp.array([1.0, 0.0, 1.0])
+        pred_y = jnp.array([1.0, -1.0, 2.0])
+
+        loss_no_eps = focal(true_y, pred_y, epsilon=0.0)
+        loss_with_eps = focal(true_y, pred_y, epsilon=0.5)
+
+        # Epsilon should affect the loss
+        assert not jnp.allclose(loss_no_eps, loss_with_eps)
+
+    def test_focal_with_class_weights(self):
+        """Test focal loss with class weights."""
+        true_y = jnp.array([1.0, 0.0, 1.0])
+        pred_y = jnp.array([1.0, -1.0, 2.0])
+
+        loss_unweighted = focal(true_y, pred_y)
+        loss_weighted = focal(true_y, pred_y, cls_weights=[2.0, 1.0])
+
+        # Class weights should affect the loss
+        assert not jnp.allclose(loss_unweighted, loss_weighted)
 
 
 class TestQLoss:
